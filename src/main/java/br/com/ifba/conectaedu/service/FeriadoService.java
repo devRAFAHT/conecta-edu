@@ -19,14 +19,17 @@ public class FeriadoService {
     private final FeriadoRepository repository;
 
     public Feriado create(Feriado feriado){
+        log.info("Criando feriado: {}", feriado.getNome());
         return repository.save(feriado);
     }
 
     public Page<FeriadoProjection> findAll(Pageable pageable){
+        log.info("Buscando todos os feriados");
         return repository.findAllPageable(pageable);
     }
 
     public Feriado findById(Long id) {
+        log.info("Buscando feriado com id {}", id);
         return repository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Feriado com id {} não encontrado", id);
@@ -35,6 +38,7 @@ public class FeriadoService {
     }
 
     public Feriado findByName(String nome) {
+        log.info("Buscando feriado com nome {}", nome);
         return repository.findByNome(nome)
                 .orElseThrow(() -> {
                     log.error("Feriado com nome {} não encontrado", nome);
@@ -42,8 +46,8 @@ public class FeriadoService {
                 });
     }
 
-
     public Feriado update(Long id, Feriado novoFeriado){
+        log.info("Atualizando feriado com id {}", id);
         Feriado feriado = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feriado com id " + id + " não encontrado"));
 
         feriado.setNome(novoFeriado.getNome());
@@ -54,11 +58,13 @@ public class FeriadoService {
     }
 
     public void delete(Long id){
+        log.info("Deletando feriado com id {}", id);
         Feriado feriado = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feriado com nome " + id + " não encontrado"));
 
         try {
             repository.delete(feriado);
         }catch (DataIntegrityViolationException e){
+            log.error("Erro de violação de integridade ao tentar deletar o feriado com id {}", id);
             throw new ResourceNotFoundException("Violação de integridade");
         }
     }
