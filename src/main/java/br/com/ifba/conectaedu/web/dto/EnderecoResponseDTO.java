@@ -1,0 +1,21 @@
+package br.com.ifba.conectaedu.web.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class EnderecoResponseDTO {
+
+    private Integer id;
+    private String cep;
+    private String estado;
+    private String cidade;
+    private String bairro;
+    private String rua;
+    private Integer numero;
+}
