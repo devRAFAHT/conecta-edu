@@ -1,6 +1,7 @@
 package br.com.ifba.conectaedu.service;
 
 import br.com.ifba.conectaedu.entity.Feriado;
+import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.FeriadoRepository;
 import br.com.ifba.conectaedu.repository.projection.FeriadoProjection;
@@ -20,6 +21,12 @@ public class FeriadoService {
 
     public Feriado create(Feriado feriado){
         log.info("Criando feriado: {}", feriado.getNome());
+
+        if(feriado.getDataInicio().isAfter(feriado.getDataFim())){
+            log.error("A data de início do feriado é posterior a data de término.");
+            throw new DateValidationException("A data de início do feriado não pode ser posterior à data de término.");
+        }
+
         return repository.save(feriado);
     }
 
@@ -53,6 +60,11 @@ public class FeriadoService {
         feriado.setNome(novoFeriado.getNome());
         feriado.setDataInicio(novoFeriado.getDataInicio());
         feriado.setDataFim(novoFeriado.getDataFim());
+
+        if(feriado.getDataInicio().isAfter(feriado.getDataFim())){
+            log.error("A data de início do feriado é posterior a data de término.");
+            throw new DateValidationException("A data de início do feriado não pode ser posterior à data de término.");
+        }
 
         return repository.save(feriado);
     }

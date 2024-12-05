@@ -1,6 +1,7 @@
 package br.com.ifba.conectaedu.service;
 
 import br.com.ifba.conectaedu.entity.EventoEscolar;
+import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.EventoEscolarRepository;
 import br.com.ifba.conectaedu.repository.projection.EventoEscolarProjection;
@@ -43,11 +44,18 @@ public class EventoEscolarService {
 
     public EventoEscolar create(EventoEscolar eventoEscolar) {
         log.info("Criando novo evento escolar com nome {}", eventoEscolar.getNome());
+
+        if(eventoEscolar.getDataInicio().isAfter(eventoEscolar.getDataTermino())){
+            log.error("A data de início do evento é posterior a data de término.");
+            throw new DateValidationException("A data de início do evento não pode ser posterior à data de término.");
+        }
+
         return repository.save(eventoEscolar);
     }
 
     public EventoEscolar update(Long id, EventoEscolar eventoEscolarAtualizado) {
         log.info("Atualizando evento escolar com id {}", id);
+
         EventoEscolar eventoEscolar = findById(id);
         eventoEscolar.setNome(eventoEscolarAtualizado.getNome());
         eventoEscolar.setDataInicio(eventoEscolarAtualizado.getDataInicio());
@@ -55,6 +63,12 @@ public class EventoEscolarService {
         eventoEscolar.setPeriodo(eventoEscolarAtualizado.getPeriodo());
         eventoEscolar.setPontosParticipacao(eventoEscolarAtualizado.getPontosParticipacao());
         eventoEscolar.setCargaHoraria(eventoEscolarAtualizado.getCargaHoraria());
+
+        if(eventoEscolar.getDataInicio().isAfter(eventoEscolar.getDataTermino())){
+            log.error("A data de início do evento é posterior a data de término.");
+            throw new DateValidationException("A data de início do evento não pode ser posterior à data de término.");
+        }
+
         return repository.save(eventoEscolar);
     }
 
