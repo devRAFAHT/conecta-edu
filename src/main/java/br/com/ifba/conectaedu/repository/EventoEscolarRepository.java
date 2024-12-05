@@ -2,7 +2,6 @@ package br.com.ifba.conectaedu.repository;
 
 import br.com.ifba.conectaedu.entity.EventoEscolar;
 import br.com.ifba.conectaedu.repository.projection.EventoEscolarProjection;
-import br.com.ifba.conectaedu.repository.projection.FeriadoProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

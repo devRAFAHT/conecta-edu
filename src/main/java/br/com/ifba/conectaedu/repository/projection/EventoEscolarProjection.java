@@ -10,7 +10,5 @@ public interface EventoEscolarProjection {
      LocalDate getDataInicio();
      LocalDate getDataTermino();
      String getPeriodo();
-     BigDecimal getPontosParticipacao();
-     Integer getCargaHoraria();
 
 }
