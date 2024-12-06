@@ -34,3 +34,4 @@ build/
 
 ### Configuração Ambientes ####
 /src/main/resources/application.properties
+README.md

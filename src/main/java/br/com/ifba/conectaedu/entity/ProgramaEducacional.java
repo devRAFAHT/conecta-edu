@@ -31,8 +31,8 @@ public class ProgramaEducacional {
             joinColumns = @JoinColumn(name = "programa_id"),
             inverseJoinColumns = @JoinColumn(name = "calendario_id")
     )
-    @Setter(value = AccessLevel.NONE)
-    private Set<Calendario> calendarios = new HashSet<>();
+    //@Setter(value = AccessLevel.NONE)
+    //private Set<Calendario> calendarios = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
