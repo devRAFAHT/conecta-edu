@@ -1,5 +1,6 @@
 package br.com.ifba.conectaedu.service;
 
+import br.com.ifba.conectaedu.entity.Calendario;
 import br.com.ifba.conectaedu.entity.Feriado;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class FeriadoService {
 
     private final FeriadoRepository repository;
 
+    @Transactional
     public Feriado create(Feriado feriado){
         log.info("Criando feriado: {}", feriado.getNome());
 
@@ -30,11 +33,13 @@ public class FeriadoService {
         return repository.save(feriado);
     }
 
+    @Transactional(readOnly = true)
     public Page<FeriadoProjection> findAll(Pageable pageable){
         log.info("Buscando todos os feriados");
         return repository.findAllPageable(pageable);
     }
 
+    @Transactional(readOnly = true)
     public Feriado findById(Long id) {
         log.info("Buscando feriado com id {}", id);
         return repository.findById(id)
@@ -44,6 +49,7 @@ public class FeriadoService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public Feriado findByName(String nome) {
         log.info("Buscando feriado com nome {}", nome);
         return repository.findByNome(nome)
@@ -53,6 +59,7 @@ public class FeriadoService {
                 });
     }
 
+    @Transactional
     public Feriado update(Long id, Feriado novoFeriado){
         log.info("Atualizando feriado com id {}", id);
         Feriado feriado = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feriado com id " + id + " não encontrado"));
@@ -69,6 +76,7 @@ public class FeriadoService {
         return repository.save(feriado);
     }
 
+    @Transactional
     public void delete(Long id){
         log.info("Deletando feriado com id {}", id);
         Feriado feriado = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feriado com nome " + id + " não encontrado"));
@@ -79,5 +87,19 @@ public class FeriadoService {
             log.error("Erro de violação de integridade ao tentar deletar o feriado com id {}", id);
             throw new ResourceNotFoundException("Violação de integridade");
         }
+    }
+
+    @Transactional
+    public void adicionarCalendario(Feriado feriado, Calendario calendario) {
+        feriado.getCalendarios().add(calendario);
+
+        repository.save(feriado);
+    }
+
+    @Transactional
+    public void removerCalendario(Feriado feriado, Calendario calendario) {
+        feriado.getCalendarios().remove(calendario);
+
+        repository.save(feriado);
     }
 }

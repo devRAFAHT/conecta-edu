@@ -1,5 +1,6 @@
 package br.com.ifba.conectaedu.service;
 
+import br.com.ifba.conectaedu.entity.Calendario;
 import br.com.ifba.conectaedu.entity.EventoEscolar;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,11 +21,13 @@ public class EventoEscolarService {
 
     private final EventoEscolarRepository repository;
 
+    @Transactional(readOnly = true)
     public Page<EventoEscolarProjection> findAll(Pageable pageable) {
         log.info("Buscando todos os eventos escolares com paginação: página {}", pageable.getPageNumber());
         return repository.findAllPageable(pageable);
     }
 
+    @Transactional(readOnly = true)
     public EventoEscolar findById(Long id) {
         log.info("Buscando evento escolar com id {}", id);
         return repository.findById(id)
@@ -33,6 +37,7 @@ public class EventoEscolarService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public EventoEscolar findByName(String nome) {
         log.info("Buscando evento escolar com nome {}", nome);
         return repository.findByNome(nome)
@@ -42,6 +47,7 @@ public class EventoEscolarService {
                 });
     }
 
+    @Transactional
     public EventoEscolar create(EventoEscolar eventoEscolar) {
         log.info("Criando novo evento escolar com nome {}", eventoEscolar.getNome());
 
@@ -53,6 +59,7 @@ public class EventoEscolarService {
         return repository.save(eventoEscolar);
     }
 
+    @Transactional
     public EventoEscolar update(Long id, EventoEscolar eventoEscolarAtualizado) {
         log.info("Atualizando evento escolar com id {}", id);
 
@@ -72,6 +79,7 @@ public class EventoEscolarService {
         return repository.save(eventoEscolar);
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Deletando evento escolar com id {}", id);
         EventoEscolar eventoEscolar = findById(id);
@@ -83,5 +91,19 @@ public class EventoEscolarService {
             log.error("Erro ao tentar deletar o evento escolar com id {}", id, e);
             throw new ResourceNotFoundException("Evento escolar com id " + id + " não encontrado");
         }
+    }
+
+    @Transactional
+    public void adicionarCalendario(EventoEscolar eventoEscolar, Calendario calendario) {
+        eventoEscolar.getCalendarios().add(calendario);
+
+        repository.save(eventoEscolar);
+    }
+
+    @Transactional
+    public void removerCalendario(EventoEscolar eventoEscolar, Calendario calendario) {
+        eventoEscolar.getCalendarios().remove(calendario);
+
+        repository.save(eventoEscolar);
     }
 }

@@ -1,6 +1,7 @@
 package br.com.ifba.conectaedu.web.exception;
 
 import br.com.ifba.conectaedu.exception.DateValidationException;
+import br.com.ifba.conectaedu.exception.ItemAlreadyInCollectionException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,15 @@ public class ApiExceptionHandler {
     @ExceptionHandler(DateValidationException.class)
     public ResponseEntity<ErrorMessage> dateValidationException(DateValidationException ex, HttpServletRequest request) {
         log.error("Api Error - Invalid date: ", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ItemAlreadyInCollectionException.class)
+    public ResponseEntity<ErrorMessage> itemAlreadyInCollectionException(ItemAlreadyInCollectionException ex, HttpServletRequest request) {
+        log.error("Api Error - Item already in collection: ", ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
