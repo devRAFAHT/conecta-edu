@@ -18,7 +18,8 @@ public class ExameNacional {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    @Column(name = "data_Aplicacao", columnDefinition = "DATE")
+    private LocalDate dataAplicacao;
     //Relacionamento
     /*@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "codigo_escola", referencedColumnName = "id")
@@ -26,7 +27,7 @@ public class ExameNacional {
 
     private String nome;
     private String descricao;
-    private LocalDate dataAplicacao;
+
     private String nivelEnsino;
 
 
