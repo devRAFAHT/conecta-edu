@@ -9,6 +9,7 @@ import br.com.ifba.conectaedu.web.dto.EscolaUpdateDTO;
 import br.com.ifba.conectaedu.web.dto.PageableDTO;
 import br.com.ifba.conectaedu.web.dto.mapper.EscolaMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.PageableMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class EscolaController {
     private final EscolaService service;
 
     @PostMapping
-    public ResponseEntity<EscolaResponseDTO> create(@RequestBody EscolaCreateDTO dto) {
+    public ResponseEntity<EscolaResponseDTO> create(@Valid @RequestBody EscolaCreateDTO dto) {
         Escola escola = EscolaMapper.toEntity(dto);
         escola = service.create(escola);
         return ResponseEntity.status(201).body(EscolaMapper.toDto(escola));
@@ -50,7 +51,7 @@ public class EscolaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EscolaResponseDTO> update(@PathVariable Long id, @RequestBody EscolaUpdateDTO dto) {
+    public ResponseEntity<EscolaResponseDTO> update(@Valid @PathVariable Long id, @RequestBody EscolaUpdateDTO dto) {
         Escola escola = EscolaMapper.updateDTOToEntity(dto);
         escola = service.update(id, escola);
         return ResponseEntity.ok(EscolaMapper.toDto(escola));

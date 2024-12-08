@@ -19,8 +19,11 @@ public class Feriado implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true, nullable = false, length = 50)
     private String nome;
+    @Column(nullable = false)
     private LocalDate dataInicio;
+    @Column(nullable = false)
     private LocalDate dataFim;
 
     @ManyToMany

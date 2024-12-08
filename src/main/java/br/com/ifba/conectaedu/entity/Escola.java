@@ -1,6 +1,7 @@
 package br.com.ifba.conectaedu.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +18,13 @@ public class Escola {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 50)
     private String nome;
+    @Column(nullable = false)
     private Integer quantidadeAlunos;
     private Integer quantidadeEvadidos;
     private Integer quantidadeAprovados;
+    @Column(nullable = false)
     private String nivelEnsino;
 
     @OneToOne(cascade = CascadeType.ALL)

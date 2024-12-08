@@ -18,7 +18,9 @@ public class Calendario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private LocalDate inicioAnoLetivo;
+    @Column(nullable = false)
     private LocalDate finalAnoLetivo;
 
     @OneToOne(mappedBy = "calendario", cascade = CascadeType.ALL, orphanRemoval = true)

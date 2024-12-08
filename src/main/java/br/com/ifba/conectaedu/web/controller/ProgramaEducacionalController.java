@@ -8,6 +8,7 @@ import br.com.ifba.conectaedu.web.dto.ProgramaEducacionalResponseDTO;
 import br.com.ifba.conectaedu.web.dto.PageableDTO;
 import br.com.ifba.conectaedu.web.dto.mapper.ProgramaEducacionalMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.PageableMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class ProgramaEducacionalController {
     private final ProgramaEducacionalService service;
 
     @PostMapping
-    public ResponseEntity<ProgramaEducacionalResponseDTO> create(@RequestBody ProgramaEducacionalCreateDTO dto) {
+    public ResponseEntity<ProgramaEducacionalResponseDTO> create(@Valid @RequestBody ProgramaEducacionalCreateDTO dto) {
         ProgramaEducacional programaEducacional = ProgramaEducacionalMapper.toProgramaEducacional(dto);
         service.create(programaEducacional);
         return ResponseEntity.status(201).body(ProgramaEducacionalMapper.toDto(programaEducacional));
@@ -47,7 +48,7 @@ public class ProgramaEducacionalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProgramaEducacionalResponseDTO> update(@PathVariable Long id, @RequestBody ProgramaEducacionalCreateDTO dto) {
+    public ResponseEntity<ProgramaEducacionalResponseDTO> update(@Valid @PathVariable Long id, @RequestBody ProgramaEducacionalCreateDTO dto) {
         ProgramaEducacional programaEducacional = ProgramaEducacionalMapper.toProgramaEducacional(dto);
         service.update(id, programaEducacional);
         return ResponseEntity.ok(ProgramaEducacionalMapper.toDto(programaEducacional));

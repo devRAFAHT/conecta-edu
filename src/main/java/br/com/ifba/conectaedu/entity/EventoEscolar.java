@@ -19,11 +19,16 @@ public class EventoEscolar implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true, nullable = false, length = 50)
     private String nome;
+    @Column(nullable = false)
     private LocalDate dataInicio;
+    @Column(nullable = false)
     private LocalDate dataTermino;
+    @Column(nullable = false, length = 100)
     private String periodo;
     private BigDecimal pontosParticipacao;
+    @Column(nullable = false)
     private Integer cargaHoraria;
 
     @ManyToMany
