@@ -8,11 +8,10 @@ import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ItemAlreadyInCollectionException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.CalendarioRepository;
-import br.com.ifba.conectaedu.repository.FeriadoRepository;
 import br.com.ifba.conectaedu.repository.projection.EventoEscolarProjection;
 import br.com.ifba.conectaedu.repository.projection.FeriadoProjection;
 import br.com.ifba.conectaedu.repository.projection.ProgramaEducacionalProjection;
-import br.com.ifba.conectaedu.web.exception.DatabaseException;
+import br.com.ifba.conectaedu.exception.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,13 +31,15 @@ public class CalendarioService {
     private final EventoEscolarService eventoEscolarService;
 
     @Transactional
-    public Calendario create(Calendario calendario){
-        if(calendario.getInicioAnoLetivo().isAfter(calendario.getFinalAnoLetivo())){
-            throw new DateValidationException("A data de início não pode ser posterior à data de término.");
-        }
+    public Calendario create(Calendario calendario) {
+        log.info("Iniciando a criação de um novo calendário.");
 
-        return repository.save(calendario);
+        calendario = repository.save(calendario);
+
+        log.info("Calendário salvo com sucesso no banco de dados: {}", calendario);
+        return calendario;
     }
+
 
     @Transactional(readOnly = true)
     public Calendario findById(Long id){

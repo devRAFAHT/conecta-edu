@@ -2,6 +2,7 @@ package br.com.ifba.conectaedu.service;
 
 import br.com.ifba.conectaedu.entity.Calendario;
 import br.com.ifba.conectaedu.entity.ProgramaEducacional;
+import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.ProgramaEducacionalRepository;
 import br.com.ifba.conectaedu.repository.projection.ProgramaEducacionalProjection;
@@ -77,7 +78,7 @@ public class ProgramaEducacionalService {
             log.info("Programa educacional com id {} deletado com sucesso", id);
         } catch (DataIntegrityViolationException e) {
             log.error("Erro ao tentar deletar o programa educacional com id {}", id, e);
-            throw new ResourceNotFoundException("Erro ao tentar deletar o programa educacional com id " + id);
+            throw new DatabaseException("Erro ao tentar deletar o programa educacional com id " + id);
         }
     }
 

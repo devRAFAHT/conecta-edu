@@ -1,5 +1,6 @@
 package br.com.ifba.conectaedu.web.exception;
 
+import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ItemAlreadyInCollectionException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;

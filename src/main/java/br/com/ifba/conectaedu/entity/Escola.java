@@ -25,8 +25,12 @@ public class Escola {
     private String nivelEnsino;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "codigo_endereco", referencedColumnName = "id")
+    @JoinColumn(name = "id_endereco", referencedColumnName = "id")
     private Endereco endereco;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_calendario", referencedColumnName = "id")
+    private Calendario calendario;
 
     @Override
     public boolean equals(Object o) {

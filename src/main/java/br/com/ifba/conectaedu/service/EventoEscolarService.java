@@ -2,6 +2,7 @@ package br.com.ifba.conectaedu.service;
 
 import br.com.ifba.conectaedu.entity.Calendario;
 import br.com.ifba.conectaedu.entity.EventoEscolar;
+import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.EventoEscolarRepository;
@@ -89,7 +90,7 @@ public class EventoEscolarService {
             log.info("Evento escolar com id {} deletado com sucesso", id);
         } catch (DataIntegrityViolationException e) {
             log.error("Erro ao tentar deletar o evento escolar com id {}", id, e);
-            throw new ResourceNotFoundException("Evento escolar com id " + id + " não encontrado");
+            throw new DatabaseException("Violação de integridade.");
         }
     }
 

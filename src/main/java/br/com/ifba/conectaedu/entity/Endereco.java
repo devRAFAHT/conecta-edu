@@ -24,7 +24,7 @@ public class Endereco {
     private String rua;
     private Integer numero;
 
-    @OneToOne(mappedBy = "endereco")
+    @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, orphanRemoval = true)
     private Escola escola;
 
     @Override

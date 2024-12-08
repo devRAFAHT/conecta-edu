@@ -1,4 +1,4 @@
-package br.com.ifba.conectaedu.web.exception;
+package br.com.ifba.conectaedu.exception;
 
 public class DatabaseException extends RuntimeException {
     public DatabaseException(String msg){

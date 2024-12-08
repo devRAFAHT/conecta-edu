@@ -2,6 +2,7 @@ package br.com.ifba.conectaedu.service;
 
 import br.com.ifba.conectaedu.entity.Calendario;
 import br.com.ifba.conectaedu.entity.Feriado;
+import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.FeriadoRepository;
@@ -85,7 +86,7 @@ public class FeriadoService {
             repository.delete(feriado);
         }catch (DataIntegrityViolationException e){
             log.error("Erro de violação de integridade ao tentar deletar o feriado com id {}", id);
-            throw new ResourceNotFoundException("Violação de integridade");
+            throw new DatabaseException("Violação de integridade");
         }
     }
 

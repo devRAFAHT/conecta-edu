@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Entity
-@Table(name = "calendario")
+@Table(name = "calendarios")
 public class Calendario {
 
     @Id
@@ -19,6 +19,9 @@ public class Calendario {
     private Long id;
     private LocalDate inicioAnoLetivo;
     private LocalDate finalAnoLetivo;
+
+    @OneToOne(mappedBy = "calendario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Escola escola;
 
     @ManyToMany(mappedBy = "calendarios")
     @Setter(value = AccessLevel.NONE)
