@@ -1,5 +1,6 @@
 package br.com.ifba.conectaedu.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +19,8 @@ public class ExameNacional {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "data_Aplicacao", columnDefinition = "DATE")
-    private LocalDate dataAplicacao;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dataExame;
     //Relacionamento
     /*@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "codigo_escola", referencedColumnName = "id")

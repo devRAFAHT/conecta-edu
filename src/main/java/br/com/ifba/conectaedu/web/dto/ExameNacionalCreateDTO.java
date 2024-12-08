@@ -14,7 +14,7 @@ public class ExameNacionalCreateDTO {
 
     private String nome;
     private String descricao;
-    private LocalDate dataAplicacao;
+    private LocalDate dataExame;
     private String nivelEnsino;
 
 }

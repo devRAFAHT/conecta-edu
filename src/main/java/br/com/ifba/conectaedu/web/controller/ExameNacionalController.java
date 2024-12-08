@@ -21,6 +21,7 @@ public class ExameNacionalController {
     public ResponseEntity<ExameNacionalCreateDTO> create(@RequestBody ProgramaEducacionalCreateDTO dto){
         ExameNacional exameNacional = ExameNacionalMapper.toExameNacional(dto);
         ExameService.create(exameNacional);
+
         return ResponseEntity.status(201).body(ExameNacionalMapper.toDto(exameNacional));
     }
     
@@ -41,5 +42,4 @@ public class ExameNacionalController {
         ExameService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }

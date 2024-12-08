@@ -16,6 +16,6 @@ public class ExameNacionalResponseDTO {
     private Long id;
     private String nome;
     private String descricao;
-    private LocalDate dataAplicacao;
+    private LocalDate dataExame;
     private String nivelEnsino;
 }

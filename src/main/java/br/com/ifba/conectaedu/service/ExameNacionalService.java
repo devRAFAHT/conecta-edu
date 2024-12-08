@@ -34,7 +34,7 @@ public class ExameNacionalService {
         ExameNacional exameNacional = findByID(id);
         exameNacional.setNome(NovoexameNacional.getNome());
         exameNacional.setDescricao(NovoexameNacional.getDescricao());
-        exameNacional.setDataAplicacao(NovoexameNacional.getDataAplicacao());
+        exameNacional.setDataExame(NovoexameNacional.getDataExame());
         exameNacional.setNivelEnsino(NovoexameNacional.getNivelEnsino());
 
         return repository.save(exameNacional);

@@ -17,6 +17,7 @@ public class ProgramaEducacionalCreateDTO {
     private String descricao;
     private LocalDate dataInicio;
     private LocalDate dataTermino;
+    private LocalDate dataExame; // Adicionado este campo
     private String periodo;
     private Integer cargaHoraria;
     private String nivelEnsino;
