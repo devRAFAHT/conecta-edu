@@ -1,5 +1,6 @@
 package br.com.ifba.conectaedu.service;
 
+import br.com.ifba.conectaedu.entity.Calendario;
 import br.com.ifba.conectaedu.entity.ProgramaEducacional;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.ProgramaEducacionalRepository;
@@ -10,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,16 +20,20 @@ public class ProgramaEducacionalService {
 
     private final ProgramaEducacionalRepository repository;
 
+    @Transactional
     public ProgramaEducacional create(ProgramaEducacional programaEducacional) {
         log.info("Criando novo programa educacional com nome {}", programaEducacional.getNome());
         return repository.save(programaEducacional);
     }
 
+
+    @Transactional(readOnly = true)
     public Page<ProgramaEducacionalProjection> findAll(Pageable pageable) {
         log.info("Buscando todos os programas educacionais com paginação: página {}", pageable.getPageNumber());
         return repository.findAllPageable(pageable);
     }
 
+    @Transactional(readOnly = true)
     public ProgramaEducacional findById(Long id) {
         log.info("Buscando programa educacional com id {}", id);
         return repository.findById(id)
@@ -37,6 +43,7 @@ public class ProgramaEducacionalService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public ProgramaEducacional findByName(String nome) {
         log.info("Buscando programa educacional com nome {}", nome);
         return repository.findByNome(nome)
@@ -46,6 +53,7 @@ public class ProgramaEducacionalService {
                 });
     }
 
+    @Transactional
     public ProgramaEducacional update(Long id, ProgramaEducacional programaAtualizado) {
         log.info("Atualizando programa educacional com id {}", id);
         ProgramaEducacional programaEducacional = findById(id);
@@ -59,6 +67,7 @@ public class ProgramaEducacionalService {
         return repository.save(programaEducacional);
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Deletando programa educacional com id {}", id);
         ProgramaEducacional programaEducacional = findById(id);
@@ -70,5 +79,19 @@ public class ProgramaEducacionalService {
             log.error("Erro ao tentar deletar o programa educacional com id {}", id, e);
             throw new ResourceNotFoundException("Erro ao tentar deletar o programa educacional com id " + id);
         }
+    }
+
+    @Transactional
+    public void adicionarCalendario(ProgramaEducacional programaEducacional, Calendario calendario) {
+        programaEducacional.getCalendarios().add(calendario);
+
+        repository.save(programaEducacional);
+    }
+
+    @Transactional
+    public void removerCalendario(ProgramaEducacional programaEducacional, Calendario calendario) {
+        programaEducacional.getCalendarios().remove(calendario);
+
+        repository.save(programaEducacional);
     }
 }

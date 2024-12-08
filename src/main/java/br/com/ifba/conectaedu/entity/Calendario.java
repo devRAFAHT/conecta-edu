@@ -3,7 +3,6 @@ package br.com.ifba.conectaedu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,33 +11,32 @@ import java.util.Set;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Entity
-@Table(name = "eventos_escolares")
-public class EventoEscolar {
+@Table(name = "calendario")
+public class Calendario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
-    private LocalDate dataInicio;
-    private LocalDate dataTermino;
-    private String periodo;
-    private BigDecimal pontosParticipacao;
-    private Integer cargaHoraria;
+    private LocalDate inicioAnoLetivo;
+    private LocalDate finalAnoLetivo;
 
-    @ManyToMany
-    @JoinTable(
-            name = "evento_calendario",
-            joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "calendario_id")
-    )
+    @ManyToMany(mappedBy = "calendarios")
     @Setter(value = AccessLevel.NONE)
-    private Set<Calendario> calendarios = new HashSet<>();
+    private Set<ProgramaEducacional> programasEducacionais = new HashSet<>();
+
+    @ManyToMany(mappedBy = "calendarios")
+    @Setter(value = AccessLevel.NONE)
+    private Set<EventoEscolar> eventosEscolares = new HashSet<>();
+
+    @ManyToMany(mappedBy = "calendarios")
+    @Setter(value = AccessLevel.NONE)
+    private Set<Feriado> feriados = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EventoEscolar that = (EventoEscolar) o;
+        Calendario that = (Calendario) o;
         return Objects.equals(id, that.id);
     }
 

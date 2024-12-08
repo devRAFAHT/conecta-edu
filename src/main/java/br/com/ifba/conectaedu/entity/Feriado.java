@@ -1,13 +1,12 @@
 package br.com.ifba.conectaedu.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,6 +21,15 @@ public class Feriado {
     private String nome;
     private LocalDate dataInicio;
     private LocalDate dataFim;
+
+    @ManyToMany
+    @JoinTable(
+            name = "feriado_calendario",
+            joinColumns = @JoinColumn(name = "feriado_id"),
+            inverseJoinColumns = @JoinColumn(name = "calendario_id")
+    )
+    @Setter(value = AccessLevel.NONE)
+    private Set<Calendario> calendarios = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

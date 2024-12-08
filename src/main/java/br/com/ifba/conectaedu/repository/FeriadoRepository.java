@@ -13,7 +13,6 @@ public interface FeriadoRepository extends JpaRepository<Feriado, Long> {
 
     @Query("select f from Feriado f")
     Page<FeriadoProjection> findAllPageable(Pageable pageable);
-    //List<Feriado> findByCalendarioId(Long id);
     Optional<Feriado> findByNome(String nome);
 
 }
