@@ -3,6 +3,7 @@ package br.com.ifba.conectaedu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor @NoArgsConstructor
 @Entity
 @Table(name = "programas_educacionais")
-public class ProgramaEducacional {
+public class ProgramaEducacional implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

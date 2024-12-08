@@ -9,31 +9,33 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "enderecos")
-public class Endereco implements Serializable {
+@Table(name = "usuarios")
+public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String cep;
-    private String estado;
-    private String cidade;
-    private String bairro;
-    private String rua;
-    private Integer numero;
+    private String nomeCompleto;
+    private String username;
+    private String senha;
+    @Column(name = "role", nullable = false, length = 25)
+    private Role role = Role.ROLE_CLIENTE;
 
-    @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Escola escola;
+    public enum Role {
+        ROLE_ADMIN, ROLE_CLIENTE
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Endereco endereco = (Endereco) o;
-        return Objects.equals(id, endereco.id);
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(id, usuario.id);
     }
 
     @Override
