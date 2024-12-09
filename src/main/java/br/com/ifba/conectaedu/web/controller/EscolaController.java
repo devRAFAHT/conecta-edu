@@ -1,12 +1,13 @@
 package br.com.ifba.conectaedu.web.controller;
 
+import br.com.ifba.conectaedu.entity.Administrador;
 import br.com.ifba.conectaedu.entity.Escola;
+import br.com.ifba.conectaedu.repository.projection.AdministradorProjection;
 import br.com.ifba.conectaedu.repository.projection.EscolaProjection;
+import br.com.ifba.conectaedu.service.AdministradorService;
 import br.com.ifba.conectaedu.service.EscolaService;
-import br.com.ifba.conectaedu.web.dto.EscolaCreateDTO;
-import br.com.ifba.conectaedu.web.dto.EscolaResponseDTO;
-import br.com.ifba.conectaedu.web.dto.EscolaUpdateDTO;
-import br.com.ifba.conectaedu.web.dto.PageableDTO;
+import br.com.ifba.conectaedu.web.dto.*;
+import br.com.ifba.conectaedu.web.dto.mapper.AdministradorMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.EscolaMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.PageableMapper;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class EscolaController {
 
     private final EscolaService service;
+    private final AdministradorService administradorService;
 
     @PostMapping
     public ResponseEntity<EscolaResponseDTO> create(@Valid @RequestBody EscolaCreateDTO dto) {
@@ -61,5 +63,23 @@ public class EscolaController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{escolaId}/administrador")
+    public ResponseEntity<AdministradorResponseDTO> criarAdministrador(@PathVariable Long escolaId, @Valid @RequestBody Long usuarioId) {
+        Administrador novoAdministrador = administradorService.criarAdministradorParaEscola(usuarioId, escolaId);
+        return ResponseEntity.status(201).body(AdministradorMapper.toDto(novoAdministrador));
+    }
+
+    @DeleteMapping("/{administradorId}/administrador")
+    public ResponseEntity<Void> removerAdministradorDaEscola(@PathVariable Long administradorId) {
+        administradorService.removerAdministradorDaEscola(administradorId);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/{escolaId}/administradores")
+    public ResponseEntity<PageableDTO> buscarAdministradores(@PathVariable Long escolaId, Pageable pageable) {
+        Page<AdministradorProjection> administradores = administradorService.findByEscola(escolaId, pageable);
+        return ResponseEntity.ok(PageableMapper.toDto(administradores));
     }
 }

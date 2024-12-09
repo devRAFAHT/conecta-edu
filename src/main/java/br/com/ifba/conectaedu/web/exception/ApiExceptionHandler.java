@@ -79,4 +79,15 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) invalido(s)", result));
     }
+
+    @ExceptionHandler(UserIsAlreadyAnAdministrator.class)
+    public ResponseEntity<ErrorMessage> userIsAlreadyAnAdministratorException(UserIsAlreadyAnAdministrator ex,
+                                                                              HttpServletRequest request) {
+        log.error("Api Error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
 }

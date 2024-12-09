@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -34,6 +36,9 @@ public class Escola {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_calendario", referencedColumnName = "id")
     private Calendario calendario;
+
+    @OneToMany(mappedBy = "escola", cascade = CascadeType.ALL)
+    private Set<Administrador> administradores = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
