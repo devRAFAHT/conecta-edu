@@ -17,4 +17,5 @@ public interface EscolaRepository extends JpaRepository<Escola, Long> {
 
     @Query("select e from Escola e")
     Page<EscolaProjection> findAllPageable(Pageable pageable);
+    boolean existsByNome(String nome);
 }

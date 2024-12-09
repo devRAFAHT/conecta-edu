@@ -20,6 +20,7 @@ public class EnderecoService {
     @Transactional
      public Endereco create(Endereco endereco){
         log.info("Criando um novo endereço: {}", endereco);
+        endereco.setEscola(null);
         endereco = repository.save(endereco);
 
         log.info("Endereço salvo com sucesso.");

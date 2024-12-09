@@ -31,6 +31,7 @@ public class Endereco implements Serializable {
     @Column(nullable = false)
     private Integer numero;
 
+
     @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, orphanRemoval = true)
     private Escola escola;
 

@@ -13,13 +13,12 @@ import lombok.*;
 public class UsuarioCreateDTO {
 
     @Size(min = 1, max = 50, message = "O nome deve conter entre 1 e 50 caracteres.")
-    @NotBlank(message = "Campo obrigatório.")
+    @NotBlank(message = "O campo nome completo é obrigatório.")
     private String nomeCompleto;
-    @NotBlank(message = "Campo obrigatório.")
-    @Email(message = "formato do e-mail está invalido", regexp = "^[a-z0-9.+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
+    @NotBlank(message = "O campo username é obrigatório.")
     @Size(min = 1, max = 20, message = "O username deve conter entre 1 e 20 caracteres.")
     private String username;
-    @NotBlank(message = "Campo obrigatório.")
-    @Size(min = 8, message = "A senha deve ter pelo menos 8 caracteres.")
+    @NotBlank(message = "O campo senha é obrigatório.")
+    @Size(min = 8, max = 50, message = "A senha deve ter entre 8 e 50 caracteres.")
     private String senha;
 }

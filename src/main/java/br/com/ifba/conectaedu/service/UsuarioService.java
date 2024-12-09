@@ -3,7 +3,7 @@ package br.com.ifba.conectaedu.service;
 import br.com.ifba.conectaedu.entity.Usuario;
 import br.com.ifba.conectaedu.exception.PasswordInvalidException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
-import br.com.ifba.conectaedu.exception.UsernameUniqueViolationException;
+import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class UsuarioService {
         try {
             return usuarioRepository.save(usuario);
         } catch (org.springframework.dao.DataIntegrityViolationException ex) {
-            throw new UsernameUniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
+            throw new UniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
         }
     }
 

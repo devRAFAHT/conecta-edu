@@ -5,6 +5,7 @@ import br.com.ifba.conectaedu.entity.EventoEscolar;
 import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
+import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.EventoEscolarRepository;
 import br.com.ifba.conectaedu.repository.projection.EventoEscolarProjection;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -52,6 +55,11 @@ public class EventoEscolarService {
     public EventoEscolar create(EventoEscolar eventoEscolar) {
         log.info("Criando novo evento escolar com nome {}", eventoEscolar.getNome());
 
+        boolean existsByNome = repository.existsByNome(eventoEscolar.getNome());
+        if(existsByNome){
+            throw new UniqueViolationException("Já tem um evento escolar com esse nome.");
+        }
+
         if(eventoEscolar.getDataInicio().isAfter(eventoEscolar.getDataTermino())){
             log.error("A data de início do evento é posterior a data de término.");
             throw new DateValidationException("A data de início do evento não pode ser posterior à data de término.");
@@ -63,6 +71,12 @@ public class EventoEscolarService {
     @Transactional
     public EventoEscolar update(Long id, EventoEscolar eventoEscolarAtualizado) {
         log.info("Atualizando evento escolar com id {}", id);
+
+        Optional<EventoEscolar> eventoExistente = repository.findByNome(eventoEscolarAtualizado.getNome());
+        if (eventoExistente.isPresent() && !eventoExistente.get().getId().equals(id)) {
+            log.error("Já existe um evento escolar com o mesmo nome: {}", eventoEscolarAtualizado.getNome());
+            throw new UniqueViolationException("Já existe um evento escolar com este nome.");
+        }
 
         EventoEscolar eventoEscolar = findById(id);
         eventoEscolar.setNome(eventoEscolarAtualizado.getNome());

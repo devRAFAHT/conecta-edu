@@ -15,4 +15,5 @@ public interface ProgramaEducacionalRepository extends JpaRepository<ProgramaEdu
     Page<ProgramaEducacionalProjection> findAllPageable(Pageable pageable);
     Optional<ProgramaEducacional> findByNome(String nome);
 
+    boolean existsByNome(String nome);
 }

@@ -5,6 +5,7 @@ import br.com.ifba.conectaedu.entity.Feriado;
 import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.DateValidationException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
+import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.FeriadoRepository;
 import br.com.ifba.conectaedu.repository.projection.FeriadoProjection;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,6 +28,11 @@ public class FeriadoService {
     @Transactional
     public Feriado create(Feriado feriado){
         log.info("Criando feriado: {}", feriado.getNome());
+
+        if (repository.existsByNome(feriado.getNome())) {
+            log.error("Já existe um feriado com o mesmo nome: {}", feriado.getNome());
+            throw new UniqueViolationException("Já existe um feriado com este nome.");
+        }
 
         if(feriado.getDataInicio().isAfter(feriado.getDataFim())){
             log.error("A data de início do feriado é posterior a data de término.");
@@ -64,6 +72,12 @@ public class FeriadoService {
     public Feriado update(Long id, Feriado novoFeriado){
         log.info("Atualizando feriado com id {}", id);
         Feriado feriado = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feriado com id " + id + " não encontrado"));
+
+        Optional<Feriado> feriadoExistente = repository.findByNome(novoFeriado.getNome());
+        if (feriadoExistente.isPresent() && !feriadoExistente.get().getId().equals(id)) {
+            log.error("Já existe outro feriado com o mesmo nome: {}", novoFeriado.getNome());
+            throw new UniqueViolationException("Já existe um feriado com este nome.");
+        }
 
         feriado.setNome(novoFeriado.getNome());
         feriado.setDataInicio(novoFeriado.getDataInicio());

@@ -5,6 +5,7 @@ import br.com.ifba.conectaedu.entity.Endereco;
 import br.com.ifba.conectaedu.entity.Escola;
 import br.com.ifba.conectaedu.exception.DatabaseException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
+import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.EscolaRepository;
 import br.com.ifba.conectaedu.repository.projection.EscolaProjection;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +32,11 @@ public class EscolaService {
     @Transactional
     public Escola create(Escola escola){
         log.info("Criando uma nova escola: {}", escola);
+
+        boolean existsByName = repository.existsByNome(escola.getNome());
+        if(existsByName){
+            throw new UniqueViolationException("Já tem uma escola com esse nome.");
+        }
 
         Calendario calendario = new Calendario();
         calendario.setInicioAnoLetivo(LocalDate.of(2024, 02, 10));
@@ -46,7 +54,6 @@ public class EscolaService {
 
         escola = repository.save(escola);
         log.info("Escola salva no banco de dados: {}", escola);
-
         return escola;
     }
 
@@ -85,6 +92,11 @@ public class EscolaService {
 
         log.info("Atualizando os dados da escola com as novas informações: {}", novaEscola);
 
+        Optional<Escola> verificarNome = repository.findByNome(novaEscola.getNome());
+        if (verificarNome.isPresent() && !verificarNome.get().getId().equals(id)) {
+            log.error("Já existe outra escola com o mesmo nome: {}", novaEscola.getNome());
+            throw new UniqueViolationException("Já existe outra escola com este nome.");
+        }
         escola.setNome(novaEscola.getNome());
         escola.setNivelEnsino(novaEscola.getNivelEnsino());
         escola.setQuantidadeAlunos(novaEscola.getQuantidadeAlunos());
