@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -28,7 +30,10 @@ public class EscolaService {
     public Escola create(Escola escola){
         log.info("Criando uma nova escola: {}", escola);
 
-        Calendario calendario = calendarioService.create(new Calendario());
+        Calendario calendario = new Calendario();
+        calendario.setInicioAnoLetivo(LocalDate.of(2024, 02, 10));
+        calendario.setFinalAnoLetivo(LocalDate.of(2024, 12, 10));
+        calendario = calendarioService.create(calendario);
         log.info("Calendário criado: {}", calendario);
 
         log.info("Calendario " + calendario.getId());
