@@ -24,7 +24,7 @@ public class Usuario implements Serializable {
     private String nomeCompleto;
     @Column(unique = true, nullable = false, length = 20)
     private String username;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String senha;
     @Column(name = "role", nullable = false, length = 25)
     private Role role = Role.ROLE_CLIENTE;

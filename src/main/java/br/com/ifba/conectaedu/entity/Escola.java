@@ -2,10 +2,7 @@ package br.com.ifba.conectaedu.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -38,6 +35,7 @@ public class Escola {
     private Calendario calendario;
 
     @OneToMany(mappedBy = "escola", cascade = CascadeType.ALL)
+    @Setter(value = AccessLevel.NONE)
     private Set<Administrador> administradores = new HashSet<>();
 
     @Override

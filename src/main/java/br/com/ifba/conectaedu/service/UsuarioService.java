@@ -6,6 +6,8 @@ import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +18,15 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Usuario create(Usuario usuario) {
         try {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
             return usuarioRepository.save(usuario);
-        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
-            throw new UniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
+        } catch (DataIntegrityViolationException ex) {
+            throw new UniqueViolationException(ex.getMessage());
         }
     }
 
@@ -40,11 +44,11 @@ public class UsuarioService {
         }
 
         Usuario user = findById(id);
-        if (!user.getSenha().equals(senhaAtual)) {
+        if (!passwordEncoder.matches(senhaAtual, user.getSenha())) {
             throw new PasswordInvalidException("Sua senha não confere.");
         }
 
-        user.setSenha(novaSenha);
+        user.setSenha(passwordEncoder.encode(novaSenha));
         return user;
     }
 
@@ -52,4 +56,14 @@ public class UsuarioService {
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException(String.format("Usuario com 'username' não encontrado", username)));
+    }
+    @Transactional(readOnly = true)
+    public Usuario.Role buscarRolePorUsername(String username) {
+        return usuarioRepository.findRoleByUsername(username);
+    }
+
 }
