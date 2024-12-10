@@ -3,7 +3,7 @@ package br.com.ifba.conectaedu.service;
 import br.com.ifba.conectaedu.entity.Endereco;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.EnderecoRepository;
-import br.com.ifba.conectaedu.web.exception.DatabaseException;
+import br.com.ifba.conectaedu.exception.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +20,12 @@ public class EnderecoService {
     @Transactional
      public Endereco create(Endereco endereco){
         log.info("Criando um novo endereço: {}", endereco);
-        return repository.save(endereco);
+        endereco.setEscola(null);
+        endereco = repository.save(endereco);
+
+        log.info("Endereço salvo com sucesso.");
+
+        return endereco;
     }
 
     @Transactional(readOnly = true)

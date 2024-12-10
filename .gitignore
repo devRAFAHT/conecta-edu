@@ -12,7 +12,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
-pelliJ IDEA ###
+
+### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
@@ -30,8 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-
-### Configuração Ambientes ####
-src/main/resources/application.properties
-README.md

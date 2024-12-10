@@ -3,6 +3,7 @@ package br.com.ifba.conectaedu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -11,14 +12,19 @@ import java.util.Set;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Entity
-@Table(name = "calendario")
-public class Calendario {
+@Table(name = "calendarios")
+public class Calendario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private LocalDate inicioAnoLetivo;
+    @Column(nullable = false)
     private LocalDate finalAnoLetivo;
+
+    @OneToOne(mappedBy = "calendario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Escola escola;
 
     @ManyToMany(mappedBy = "calendarios")
     @Setter(value = AccessLevel.NONE)

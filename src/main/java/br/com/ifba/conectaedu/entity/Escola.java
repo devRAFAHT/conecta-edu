@@ -1,12 +1,12 @@
 package br.com.ifba.conectaedu.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -17,16 +17,26 @@ public class Escola {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 50)
     private String nome;
+    @Column(nullable = false)
     private Integer quantidadeAlunos;
     private Integer quantidadeEvadidos;
     private Integer quantidadeAprovados;
+    @Column(nullable = false)
     private String nivelEnsino;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "codigo_endereco", referencedColumnName = "id")
+    @JoinColumn(name = "id_endereco", referencedColumnName = "id")
     private Endereco endereco;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_calendario", referencedColumnName = "id")
+    private Calendario calendario;
+
+    @OneToMany(mappedBy = "escola", cascade = CascadeType.ALL)
+    @Setter(value = AccessLevel.NONE)
+    private Set<Administrador> administradores = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

@@ -10,12 +10,13 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "exame_nacional")
 public class ExameNacional {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

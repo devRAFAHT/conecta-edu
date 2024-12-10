@@ -8,6 +8,7 @@ import br.com.ifba.conectaedu.web.dto.FeriadoResponseDTO;
 import br.com.ifba.conectaedu.web.dto.PageableDTO;
 import br.com.ifba.conectaedu.web.dto.mapper.FeriadoMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.PageableMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class FeriadoController {
     private final FeriadoService service;
 
     @PostMapping
-    public ResponseEntity<FeriadoResponseDTO> create(@RequestBody FeriadoCreateDTO dto){
+    public ResponseEntity<FeriadoResponseDTO> create(@Valid @RequestBody FeriadoCreateDTO dto){
         Feriado feriado = FeriadoMapper.toFeriado(dto);
         service.create(feriado);
         return ResponseEntity.status(201).body(FeriadoMapper.toDto(feriado));
@@ -47,7 +48,7 @@ public class FeriadoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FeriadoResponseDTO> update(@PathVariable Long id, @RequestBody FeriadoCreateDTO dto){
+    public ResponseEntity<FeriadoResponseDTO> update(@Valid @PathVariable Long id, @RequestBody FeriadoCreateDTO dto){
         Feriado feriado = FeriadoMapper.toFeriado(dto);
         service.update(id, feriado);
         return ResponseEntity.ok(FeriadoMapper.toDto(feriado));

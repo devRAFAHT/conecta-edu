@@ -14,5 +14,6 @@ public interface EventoEscolarRepository extends JpaRepository<EventoEscolar, Lo
     @Query("select e from EventoEscolar e")
     Page<EventoEscolarProjection> findAllPageable(Pageable pageable);
     Optional<EventoEscolar> findByNome(String nome);
+    boolean existsByNome(String nome);
 
 }

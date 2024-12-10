@@ -6,25 +6,33 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "enderecos")
-public class Endereco {
+public class Endereco implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, length = 10)
     private String cep;
+    @Column(nullable = false, length = 50)
     private String estado;
+    @Column(nullable = false, length = 50)
     private String cidade;
+    @Column(length = 50)
     private String bairro;
+    @Column(nullable = false, length = 50)
     private String rua;
+    @Column(nullable = false)
     private Integer numero;
 
-    @OneToOne(mappedBy = "endereco")
+
+    @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, orphanRemoval = true)
     private Escola escola;
 
     @Override

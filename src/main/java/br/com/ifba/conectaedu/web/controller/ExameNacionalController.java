@@ -1,6 +1,5 @@
 package br.com.ifba.conectaedu.web.controller;
 
-
 import br.com.ifba.conectaedu.entity.ExameNacional;
 import br.com.ifba.conectaedu.service.ExameNacionalService;
 import br.com.ifba.conectaedu.web.dto.ExameNacionalCreateDTO;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("conecta-edu/v1/exame-nacional")
 public class ExameNacionalController {
-    
+
     private final ExameNacionalService ExameService;
 
     @PostMapping
@@ -24,7 +23,7 @@ public class ExameNacionalController {
 
         return ResponseEntity.status(201).body(ExameNacionalMapper.toDto(exameNacional));
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<ExameNacionalCreateDTO> findById(@PathVariable Long id){
         ExameNacional exameNacional = ExameService.findByID(id);

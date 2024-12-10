@@ -8,6 +8,7 @@ import br.com.ifba.conectaedu.web.dto.EventoEscolarResponseDTO;
 import br.com.ifba.conectaedu.web.dto.PageableDTO;
 import br.com.ifba.conectaedu.web.dto.mapper.EventoEscolarMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.PageableMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class EventoEscolarController {
     private final EventoEscolarService service;
 
     @PostMapping
-    public ResponseEntity<EventoEscolarResponseDTO> create(@RequestBody EventoEscolarCreateDTO dto) {
+    public ResponseEntity<EventoEscolarResponseDTO> create(@Valid @RequestBody EventoEscolarCreateDTO dto) {
         EventoEscolar eventoEscolar = EventoEscolarMapper.toEventoEscolar(dto);
         service.create(eventoEscolar);
         return ResponseEntity.status(201).body(EventoEscolarMapper.toDto(eventoEscolar));
@@ -47,7 +48,7 @@ public class EventoEscolarController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EventoEscolarResponseDTO> update(@PathVariable Long id, @RequestBody EventoEscolarCreateDTO dto) {
+    public ResponseEntity<EventoEscolarResponseDTO> update(@Valid @PathVariable Long id, @RequestBody EventoEscolarCreateDTO dto) {
         EventoEscolar eventoEscolar = EventoEscolarMapper.toEventoEscolar(dto);
         service.update(id, eventoEscolar);
         return ResponseEntity.ok(EventoEscolarMapper.toDto(eventoEscolar));
