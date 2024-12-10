@@ -1,17 +1,12 @@
 package br.com.ifba.conectaedu.service;
 
-import br.com.ifba.conectaedu.entity.Calendario;
-import br.com.ifba.conectaedu.entity.EventoEscolar;
-import br.com.ifba.conectaedu.entity.Feriado;
-import br.com.ifba.conectaedu.entity.ProgramaEducacional;
-import br.com.ifba.conectaedu.exception.DateValidationException;
-import br.com.ifba.conectaedu.exception.ItemAlreadyInCollectionException;
-import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
+import br.com.ifba.conectaedu.entity.*;
+import br.com.ifba.conectaedu.exception.*;
 import br.com.ifba.conectaedu.repository.CalendarioRepository;
 import br.com.ifba.conectaedu.repository.projection.EventoEscolarProjection;
 import br.com.ifba.conectaedu.repository.projection.FeriadoProjection;
 import br.com.ifba.conectaedu.repository.projection.ProgramaEducacionalProjection;
-import br.com.ifba.conectaedu.exception.DatabaseException;
+import br.com.ifba.conectaedu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,6 +24,7 @@ public class CalendarioService {
     private final FeriadoService feriadoService;
     private final ProgramaEducacionalService programaEducacionalService;
     private final EventoEscolarService eventoEscolarService;
+    private final UserUtil userUtil;
 
     @Transactional
     public Calendario create(Calendario calendario) {
@@ -52,18 +48,38 @@ public class CalendarioService {
     }
 
     @Transactional
-    public Calendario update(Long id, Calendario novoCalendario){
+    public Calendario update(Long id, Calendario novoCalendario) {
+        log.info("Iniciando atualização do calendário com ID: {}", id);
+
         Calendario calendario = findById(id);
+        log.info("Calendário encontrado: {}", calendario);
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar a escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), id, isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         calendario.setInicioAnoLetivo(novoCalendario.getInicioAnoLetivo());
         calendario.setFinalAnoLetivo(novoCalendario.getFinalAnoLetivo());
+        log.info("Dados atualizados para: início do ano letivo = {}, final do ano letivo = {}",
+                novoCalendario.getInicioAnoLetivo(), novoCalendario.getFinalAnoLetivo());
 
-        if(calendario.getInicioAnoLetivo().isAfter(calendario.getFinalAnoLetivo())){
+        if (calendario.getInicioAnoLetivo().isAfter(calendario.getFinalAnoLetivo())) {
+            log.error("Validação falhou: a data de início ({}) é posterior à data de término ({})",
+                    calendario.getInicioAnoLetivo(), calendario.getFinalAnoLetivo());
             throw new DateValidationException("A data de início não pode ser posterior à data de término.");
         }
 
-        return repository.save(calendario);
+        Calendario savedCalendario = repository.save(calendario);
+        log.info("Calendário atualizado e salvo com sucesso: {}", savedCalendario);
+
+        return savedCalendario;
     }
+
 
     @Transactional
     public void delete(Long id){
@@ -84,6 +100,15 @@ public class CalendarioService {
 
         Calendario calendario = findById(calendarioId);
         log.debug("Calendário encontrado: {}", calendario);
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o calendário da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), calendario.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         Feriado feriado = feriadoService.findById(feriadoId);
         log.debug("Feriado encontrado: {}", feriado);
@@ -118,6 +143,15 @@ public class CalendarioService {
         Calendario calendario = findById(calendarioId);
         log.debug("Calendário encontrado: {}", calendario);
 
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o calendário da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), calendario.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
+
         ProgramaEducacional programaEducacional = programaEducacionalService.findById(programaEducacionalId);
         log.debug("Programa educacional encontrado: {}", programaEducacional);
 
@@ -150,6 +184,15 @@ public class CalendarioService {
 
         Calendario calendario = findById(calendarioId);
         log.debug("Calendário encontrado: {}", calendario);
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o calendário da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), calendario.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         EventoEscolar eventoEscolar = eventoEscolarService.findById(eventoEscolarId);
         log.debug("Evento escolar encontrado: {}", eventoEscolar);
@@ -184,6 +227,15 @@ public class CalendarioService {
         Calendario calendario = findById(calendarioId);
         EventoEscolar eventoEscolar = eventoEscolarService.findById(eventoEscolarId);
 
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o calendário da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), calendario.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
+
         if (!calendario.getEventosEscolares().contains(eventoEscolar)) {
             log.error("Tentativa de remover um evento escolar que não está no calendário. Evento Escolar ID: {}", eventoEscolarId);
             throw new ResourceNotFoundException("O evento escolar não está no calendário.");
@@ -207,6 +259,15 @@ public class CalendarioService {
         Calendario calendario = findById(calendarioId);
         ProgramaEducacional programaEducacional = programaEducacionalService.findById(programaEducacionalId);
 
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o calendário da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), calendario.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
+
         if (!calendario.getProgramasEducacionais().contains(programaEducacional)) {
             log.error("Tentativa de remover um programa educacional que não está no calendário. Programa Educacional ID: {}", programaEducacionalId);
             throw new ResourceNotFoundException("O programa educacional não está no calendário.");
@@ -229,6 +290,15 @@ public class CalendarioService {
 
         Calendario calendario = findById(calendarioId);
         Feriado feriado = feriadoService.findById(feriadoId);
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(calendario.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o calendário da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), calendario.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         if (!calendario.getFeriados().contains(feriado)) {
             log.error("Tentativa de remover um feriado que não está no calendário. Feriado ID: {}", feriadoId);

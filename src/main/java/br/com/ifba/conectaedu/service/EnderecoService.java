@@ -1,9 +1,11 @@
 package br.com.ifba.conectaedu.service;
 
 import br.com.ifba.conectaedu.entity.Endereco;
+import br.com.ifba.conectaedu.exception.NotAdministratorException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.repository.EnderecoRepository;
 import br.com.ifba.conectaedu.exception.DatabaseException;
+import br.com.ifba.conectaedu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EnderecoService {
 
     private final EnderecoRepository repository;
+    private final UserUtil userUtil;
 
     @Transactional
      public Endereco create(Endereco endereco){
@@ -45,6 +48,15 @@ public class EnderecoService {
             log.error("Endereço com id {} não encontrado para atualização", id);
             return new ResourceNotFoundException("Endereço com id " + id + " não encontrado");
         });
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(endereco.getEscola());
+        log.info("Usuário '{}' está tentando atualizar o endereço da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), endereco.getEscola().getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         log.debug("Atualizando campos do endereço para: {}", novoEndereco);
         endereco.setCep(novoEndereco.getCep());

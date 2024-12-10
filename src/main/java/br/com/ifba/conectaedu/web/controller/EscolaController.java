@@ -67,7 +67,7 @@ public class EscolaController {
 
     @PostMapping("/{escolaId}/administrador")
     public ResponseEntity<AdministradorResponseDTO> criarAdministrador(@PathVariable Long escolaId, @Valid @RequestBody Long usuarioId) {
-        Administrador novoAdministrador = administradorService.criarAdministradorParaEscola(usuarioId, escolaId);
+        Administrador novoAdministrador = administradorService.adicionarAdministradorNaEscola(usuarioId, escolaId);
         return ResponseEntity.status(201).body(AdministradorMapper.toDto(novoAdministrador));
     }
 

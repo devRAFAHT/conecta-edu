@@ -1,13 +1,13 @@
 package br.com.ifba.conectaedu.service;
 
-import br.com.ifba.conectaedu.entity.Calendario;
-import br.com.ifba.conectaedu.entity.Endereco;
-import br.com.ifba.conectaedu.entity.Escola;
+import br.com.ifba.conectaedu.entity.*;
 import br.com.ifba.conectaedu.exception.DatabaseException;
+import br.com.ifba.conectaedu.exception.NotAdministratorException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.EscolaRepository;
 import br.com.ifba.conectaedu.repository.projection.EscolaProjection;
+import br.com.ifba.conectaedu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -28,6 +27,9 @@ public class EscolaService {
     private final EscolaRepository repository;
     private final CalendarioService calendarioService;
     private final EnderecoService enderecoService;
+    private final UserUtil userUtil;
+    private final AdministradorService administradorService;
+    private final UsuarioService usuarioService;
 
     @Transactional
     public Escola create(Escola escola){
@@ -52,8 +54,19 @@ public class EscolaService {
         escola.setCalendario(calendarioService.findById(calendario.getId()));
         escola.setEndereco(enderecoService.findById(endereco.getId()));
 
+        log.info("Buscando usuário logado...");
+        Usuario usuario = usuarioService.findByUsername(UserUtil.getLoggedInUsername());
+        log.info("Usuário encontrado: {}", usuario);
+
+        Administrador administrador = new Administrador();
+        administrador.setEscola(escola);
+        administrador.setUsuario(usuario);
+
+        administrador = administradorService.criarAdministrador(administrador);
+
         escola = repository.save(escola);
         log.info("Escola salva no banco de dados: {}", escola);
+
         return escola;
     }
 
@@ -90,7 +103,14 @@ public class EscolaService {
         Escola escola = findById(id);
         log.info("Escola encontrada: {}", escola);
 
-        log.info("Atualizando os dados da escola com as novas informações: {}", novaEscola);
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(escola);
+        log.info("Usuário '{}' está tentando atualizar a escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), escola.getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         Optional<Escola> verificarNome = repository.findByNome(novaEscola.getNome());
         if (verificarNome.isPresent() && !verificarNome.get().getId().equals(id)) {
@@ -115,6 +135,15 @@ public class EscolaService {
 
         Escola escola = findById(id);
         log.info("Escola encontrada para exclusão: {}", escola);
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(escola);
+        log.info("Usuário '{}' está tentando excluir a escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), escola.getId(), isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de excluir a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
 
         try {
             repository.delete(escola);

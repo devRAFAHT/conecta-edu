@@ -2,6 +2,7 @@ package br.com.ifba.conectaedu.web.controller;
 
 import br.com.ifba.conectaedu.entity.Usuario;
 import br.com.ifba.conectaedu.service.UsuarioService;
+import br.com.ifba.conectaedu.util.UserUtil;
 import br.com.ifba.conectaedu.web.dto.UsuarioCreateDTO;
 import br.com.ifba.conectaedu.web.dto.UsuarioResponseDTO;
 import br.com.ifba.conectaedu.web.dto.UsuarioUpdateDTO;
@@ -47,5 +48,10 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioResponseDTO>> findAll() {
         List<Usuario> users = usuarioService.findAll();
         return ResponseEntity.ok(UsuarioMapper.toListDto(users));
+    }
+
+    @GetMapping("/me")
+    public String getLoggedInUser() {
+        return "Usuário logado: " + UserUtil.getLoggedInUsername();
     }
 }

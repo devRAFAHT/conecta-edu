@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AdministradorRepository extends JpaRepository<Administrador, Long> {
 
@@ -15,4 +16,5 @@ public interface AdministradorRepository extends JpaRepository<Administrador, Lo
     Page<AdministradorProjection> findByEscolaIdPageable(Long escolaId, Pageable pageable);
     List<Administrador> findByEscolaId(Long id);
     Administrador findByUsuarioId(Long id);
+    Optional<Administrador> findByUsuarioUsername(String username);
 }
