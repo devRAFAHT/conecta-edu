@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ public class ProgramaEducacionalController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProgramaEducacionalResponseDTO> update(@Valid @PathVariable Long id, @RequestBody ProgramaEducacionalCreateDTO dto) {
         ProgramaEducacional programaEducacional = ProgramaEducacionalMapper.toProgramaEducacional(dto);
         service.update(id, programaEducacional);
@@ -55,6 +57,7 @@ public class ProgramaEducacionalController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
