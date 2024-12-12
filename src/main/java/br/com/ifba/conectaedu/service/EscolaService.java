@@ -145,6 +145,8 @@ public class EscolaService {
             throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
         }
 
+        calendarioService.emptyLists(escola.getCalendario());
+
         try {
             repository.delete(escola);
             log.info("Escola com ID {} excluída com sucesso.", id);

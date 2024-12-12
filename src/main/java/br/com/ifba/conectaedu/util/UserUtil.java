@@ -2,7 +2,6 @@ package br.com.ifba.conectaedu.util;
 
 import br.com.ifba.conectaedu.entity.Administrador;
 import br.com.ifba.conectaedu.entity.Escola;
-import br.com.ifba.conectaedu.service.AdministradorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +28,7 @@ public class UserUtil {
         return null;
     }
 
-    public  boolean isAdminOfSchool(Escola escola){
+    public boolean isAdminOfSchool(Escola escola){
 
         if (escola.getAdministradores().stream()
                 .anyMatch(adm -> adm.getUsuario().getUsername().equals(getLoggedInUsername()))) {

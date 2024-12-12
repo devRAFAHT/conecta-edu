@@ -343,4 +343,23 @@ public class CalendarioService {
         return repository.findProgramasEducacionaisByCalendarioId(calendarioId, pageable);
     }
 
+    public void emptyLists(Calendario calendario) {
+        if (!calendario.getFeriados().isEmpty() || !calendario.getProgramasEducacionais().isEmpty() || !calendario.getEventosEscolares().isEmpty()) {
+            log.info("Iniciando a limpeza das listas do calendário ID: " + calendario.getId());
+
+            calendario.getProgramasEducacionais().clear();
+            log.info("Lista de Programas Educacionais limpa.");
+
+            calendario.getFeriados().clear();
+            log.info("Lista de Feriados limpa.");
+
+            calendario.getEventosEscolares().clear();
+            log.info("Lista de Eventos Escolares limpa.");
+
+            repository.save(calendario);
+            log.info("Calendário ID: " + calendario.getId() + " salvo após a limpeza.");
+        } else {
+            log.info("Nenhuma lista para limpar no calendário ID: " + calendario.getId());
+        }
+    }
 }
