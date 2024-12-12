@@ -34,7 +34,7 @@ public class SpringSecurityConfig {
                         authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers(
                                         "conecta-edu/v1/usuarios",
-                                        "conecta-edu/v1/auth"
+                                       "conecta-edu/v1/auth"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
