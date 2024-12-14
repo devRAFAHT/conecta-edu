@@ -6,6 +6,7 @@ import br.com.ifba.conectaedu.repository.ExameNacionalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ExameNacionalService {
 
+    @Autowired
     private final ExameNacionalRepository repository;
 
     @Transactional

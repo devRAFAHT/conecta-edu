@@ -7,7 +7,9 @@ import br.com.ifba.conectaedu.web.dto.ProgramaEducacionalCreateDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExameNacionalMapper {
 

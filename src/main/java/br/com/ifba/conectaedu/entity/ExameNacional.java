@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -16,12 +17,13 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "exame_nacional")
-public class ExameNacional {
+public class ExameNacional implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private LocalDate dataExame;
 
     @Column(nullable = false, length = 100)

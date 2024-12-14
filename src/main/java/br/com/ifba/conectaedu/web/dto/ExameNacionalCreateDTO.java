@@ -1,6 +1,8 @@
 package br.com.ifba.conectaedu.web.dto;
 
+import br.com.ifba.conectaedu.entity.Escola;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +20,10 @@ public class ExameNacionalCreateDTO {
     private String nome;
     @NotBlank(message = "Digite a descrição desse Exame")
     private String descricao;
-    @NotBlank(message = "A data do Exame é Obrigatório")
+    @NotNull(message = "A data do Exame é Obrigatório")
     private LocalDate dataExame;
     @NotBlank(message = "O nível de Ensino é obrigatório")
     private String nivelEnsino;
+
+
 }
