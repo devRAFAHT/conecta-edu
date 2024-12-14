@@ -21,17 +21,21 @@ public class ExameNacional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Column(nullable = false)
     private LocalDate dataExame;
-    //Relacionamento
-    /*@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "codigo_escola", referencedColumnName = "id")
-    private Escola escola;*/
 
+    @Column(nullable = false, length = 100)
     private String nome;
+    @Column(length = 500)
     private String descricao;
 
+    @Column(nullable = false, length = 50)
     private String nivelEnsino;
 
+
+    /*@ManyToOne
+    @JoinColumn(name = "escola_id", nullable = false)
+    private Escola escola;*/
 
     @Override
     public boolean equals(Object o) {

@@ -3,8 +3,10 @@ package br.com.ifba.conectaedu.web.controller;
 import br.com.ifba.conectaedu.entity.ExameNacional;
 import br.com.ifba.conectaedu.service.ExameNacionalService;
 import br.com.ifba.conectaedu.web.dto.ExameNacionalCreateDTO;
+import br.com.ifba.conectaedu.web.dto.ExameNacionalResponseDTO;
 import br.com.ifba.conectaedu.web.dto.ProgramaEducacionalCreateDTO;
 import br.com.ifba.conectaedu.web.dto.mapper.ExameNacionalMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ public class ExameNacionalController {
     private final ExameNacionalService ExameService;
 
     @PostMapping
-    public ResponseEntity<ExameNacionalCreateDTO> create(@RequestBody ProgramaEducacionalCreateDTO dto){
+    public ResponseEntity<ExameNacionalResponseDTO> create(@Valid @RequestBody ExameNacionalCreateDTO dto){
         ExameNacional exameNacional = ExameNacionalMapper.toExameNacional(dto);
         ExameService.create(exameNacional);
 
@@ -25,13 +27,13 @@ public class ExameNacionalController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExameNacionalCreateDTO> findById(@PathVariable Long id){
+    public ResponseEntity<ExameNacionalResponseDTO> findById(@PathVariable Long id){
         ExameNacional exameNacional = ExameService.findByID(id);
         return ResponseEntity.ok(ExameNacionalMapper.toDto(exameNacional));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ExameNacionalCreateDTO> update(@PathVariable Long id, @RequestBody ProgramaEducacionalCreateDTO dto){
+    public ResponseEntity<ExameNacionalResponseDTO> update(@PathVariable Long id, @RequestBody ExameNacionalCreateDTO dto){
         ExameNacional exameNacional = ExameNacionalMapper.toExameNacional(dto);
         ExameService.update(id, exameNacional);
         return ResponseEntity.ok(ExameNacionalMapper.toDto(exameNacional));

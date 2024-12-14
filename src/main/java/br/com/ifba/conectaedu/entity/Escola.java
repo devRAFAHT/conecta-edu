@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,6 +38,9 @@ public class Escola {
     @OneToMany(mappedBy = "escola", cascade = CascadeType.ALL)
     @Setter(value = AccessLevel.NONE)
     private Set<Administrador> administradores = new HashSet<>();
+
+    /*@OneToMany(mappedBy = "escola", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExameNacional> exame;*/
 
     @Override
     public boolean equals(Object o) {
