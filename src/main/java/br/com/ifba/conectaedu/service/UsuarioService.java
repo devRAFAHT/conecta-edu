@@ -5,7 +5,9 @@ import br.com.ifba.conectaedu.exception.PasswordInvalidException;
 import br.com.ifba.conectaedu.exception.ResourceNotFoundException;
 import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.UsuarioRepository;
+import br.com.ifba.conectaedu.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UsuarioService {
@@ -64,6 +67,13 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario.Role buscarRolePorUsername(String username) {
         return usuarioRepository.findRoleByUsername(username);
+    }
+
+    public String getLoggedInUser() {
+        log.info("Buscando usuário com username {}", UserUtil.getLoggedInUsername());
+        Usuario usuario = usuarioRepository.findByUsername(UserUtil.getLoggedInUsername()).get();
+        log.info("Retornando usuário com nome {}", usuario.getNomeCompleto());
+        return usuario.getNomeCompleto();
     }
 
 }

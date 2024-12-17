@@ -52,6 +52,6 @@ public class UsuarioController {
 
     @GetMapping("/me")
     public String getLoggedInUser() {
-        return "Usuário logado: " + UserUtil.getLoggedInUsername();
+        return usuarioService.getLoggedInUser();
     }
 }
