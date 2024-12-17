@@ -8,6 +8,7 @@ import br.com.ifba.conectaedu.exception.UniqueViolationException;
 import br.com.ifba.conectaedu.repository.EscolaRepository;
 import br.com.ifba.conectaedu.repository.projection.EscolaProjection;
 import br.com.ifba.conectaedu.util.UserUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -30,6 +32,7 @@ public class EscolaService {
     private final UserUtil userUtil;
     private final AdministradorService administradorService;
     private final UsuarioService usuarioService;
+    private final ExameNacionalService exameService;
 
     @Transactional
     public Escola create(Escola escola){
@@ -153,6 +156,69 @@ public class EscolaService {
         } catch (DataIntegrityViolationException e) {
             log.error("Erro de integridade ao tentar excluir a escola com ID {}: {}", id, e.getMessage());
             throw new DatabaseException("Violação de integridade.");
+        }
+    }
+    @Transactional
+    public ExameNacional  adicionarExameNacionalAEscola(long escolaId, ExameNacional exameNacional) {
+        log.info("Buscando escola com ID: {}", escolaId);
+        Escola escola = findById(escolaId);
+        if (escola == null) {
+            throw new EntityNotFoundException("Escola com ID " + escolaId + " não encontrada.");
+        }
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(escola);
+        log.info("Usuário '{}' está tentando atualizar o Exame Nacional da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), escola, isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
+
+        log.info("Adicionando exame nacional à escola com ID: {}", escolaId);
+
+        exameNacional.setEscola(escola);
+        escola.getExameNacional().add(exameNacional);
+
+        try{
+            repository.save(escola);
+            log.info("Exame nacional adicionada com sucesso: {}", exameNacional);
+        }catch (Exception e){
+            log.error("Erro ao tentar adicionar exame nacional: {}", e.getMessage());
+        }
+
+        return exameNacional;
+    }
+
+    @Transactional
+    public void excluirExameNacionalAEscola(Long escolaId, Long exameId) {
+        log.info("Buscando escola com ID: {}", escolaId);
+
+        Escola escola = findById(escolaId);
+        if(escola == null){
+            throw new RuntimeException("Falha ao buscar escola com ID: " + escolaId);
+        }
+
+
+        List<ExameNacional> exame = escola.getExameNacional();
+
+        boolean isAdminiOfSchool = userUtil.isAdminOfSchool(escola);
+        log.info("Usuário '{}' está tentando atualizar o Exame Nacional da escola com ID: {}. Verificação de administrador: {}",
+                UserUtil.getLoggedInUsername(), escola, isAdminiOfSchool);
+
+        if (!isAdminiOfSchool) {
+            log.error("Tentativa não autorizada de atualizar a escola. Usuário: '{}'", UserUtil.getLoggedInUsername());
+            throw new NotAdministratorException("O usuário '" + UserUtil.getLoggedInUsername() + "' não é administrador dessa escola.");
+        }
+
+        if(exame == null){
+            throw new RuntimeException("Sem Exame Criado");
+        }
+        try{
+            log.info("Excluindo o Exame com ID: {}", exameId);
+            repository.deleteById(exameId);
+        } catch (Exception e) {
+            log.error("Erro ao tentar adicionar exame nacional: {}", e.getMessage());
         }
     }
 }

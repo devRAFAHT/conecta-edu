@@ -15,10 +15,10 @@ import java.time.LocalDate;
 public class ExameNacionalResponseDTO {
 
     private Long id;
+    private Long escolaId;
     private String nome;
     private String descricao;
     private LocalDate dataExame;
     private String nivelEnsino;
-
 
 }

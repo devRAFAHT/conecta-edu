@@ -25,5 +25,4 @@ public class ExameNacionalCreateDTO {
     @NotBlank(message = "O nível de Ensino é obrigatório")
     private String nivelEnsino;
 
-
 }

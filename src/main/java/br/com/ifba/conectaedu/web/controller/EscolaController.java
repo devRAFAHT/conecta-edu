@@ -2,13 +2,16 @@ package br.com.ifba.conectaedu.web.controller;
 
 import br.com.ifba.conectaedu.entity.Administrador;
 import br.com.ifba.conectaedu.entity.Escola;
+import br.com.ifba.conectaedu.entity.ExameNacional;
 import br.com.ifba.conectaedu.repository.projection.AdministradorProjection;
 import br.com.ifba.conectaedu.repository.projection.EscolaProjection;
 import br.com.ifba.conectaedu.service.AdministradorService;
 import br.com.ifba.conectaedu.service.EscolaService;
+import br.com.ifba.conectaedu.service.ExameNacionalService;
 import br.com.ifba.conectaedu.web.dto.*;
 import br.com.ifba.conectaedu.web.dto.mapper.AdministradorMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.EscolaMapper;
+import br.com.ifba.conectaedu.web.dto.mapper.ExameNacionalMapper;
 import br.com.ifba.conectaedu.web.dto.mapper.PageableMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,8 @@ public class EscolaController {
 
     private final EscolaService service;
     private final AdministradorService administradorService;
+    private final EscolaService escolaService;
+    private final ExameNacionalService exameNacionalService;
 
     @PostMapping
     public ResponseEntity<EscolaResponseDTO> create(@Valid @RequestBody EscolaCreateDTO dto) {
@@ -81,5 +86,15 @@ public class EscolaController {
     public ResponseEntity<PageableDTO> buscarAdministradores(@PathVariable Long escolaId, Pageable pageable) {
         Page<AdministradorProjection> administradores = administradorService.findByEscola(escolaId, pageable);
         return ResponseEntity.ok(PageableMapper.toDto(administradores));
+    }
+    @PostMapping("{escolaId}/exames")
+    public ResponseEntity <ExameNacionalResponseDTO> criarExame(@PathVariable Long escolaId, @RequestBody ExameNacional exame) {
+        ExameNacional novoExame = escolaService.adicionarExameNacionalAEscola(escolaId, exame);
+        return ResponseEntity.ok(ExameNacionalMapper.toDto(novoExame));
+    }
+    @DeleteMapping("{escolaId}/{id}")
+    public ResponseEntity<Void> removerExame(@PathVariable Long escolaId, @PathVariable Long id) {
+        exameNacionalService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
